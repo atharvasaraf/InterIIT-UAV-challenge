@@ -34,14 +34,15 @@ for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=T
 	#gray = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 	edges = cv2.Canny(mask, 50, 150, apertureSize=3)	
 	lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 4, minLineLength, maxLineGap)
+	
 	if lines is not None:
 		for i in range(len(lines)):
 			for x1,y1,x2,y2 in lines[i]:
 				cv2.line(screen, (x1, y1), (x2, y2), (0, 255, 0), 2)
+	
 	cv2.namedWindow('img',cv2.WINDOW_NORMAL)
 	cv2.resizeWindow('img',1368,786)
 	cv2.imshow('img', screen)
-	
 	k = cv2.waitKey(1)
 	if k == 27:
 		break
