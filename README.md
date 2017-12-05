@@ -1,14 +1,15 @@
-# InterIIT-UAV-challenge
+# InterIIT-UAV-challenge ![InterIIT-UAV-challenge][https://i.imgur.com/Pzj8mov.png]
 install cv2
 https://docs.opencv.org/2.4/doc/tutorials/introduction/linux_install/linux_install.html
 
 install numpy,os
-pip install numpy,os
+`pip install numpy,os`
 
 install qrtools
-sudo apt-get install python-qrtools
+`sudo apt-get install python-qrtools`
+
 run joeydash's program
-python main.py
+`python main.py`
 
 
 Image processing for Inter-iit UAV challenge 2017-18
