@@ -1,5 +1,5 @@
 # InterIIT-UAV-challenge
-![INTER-IIT](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png)
+![INTER-IIT](https://i.imgur.com/Pzj8mov.png)
 
 install cv2
 https://docs.opencv.org/2.4/doc/tutorials/introduction/linux_install/linux_install.html
