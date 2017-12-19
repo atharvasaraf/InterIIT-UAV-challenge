@@ -1,9 +1,9 @@
 #!/usr/bin/ python 2.7.12
-import cv2
-import numpy as np
+import cv2,numpy as np
 
 cap = cv2.VideoCapture(0)
-while 1:
+print "press ESCAPE to exit"
+while True:
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray, 50, 150, apertureSize=3)
