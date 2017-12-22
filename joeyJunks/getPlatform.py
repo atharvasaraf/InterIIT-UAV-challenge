@@ -11,7 +11,20 @@ while True:
 
     mask = cv2.inRange(hsv, lower_red, upper_red)
     cv2.imshow("frame", frame)
-    cv2.imshow("mask", mask)
+    # cv2.imshow("mask", mask)
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+                            cv2.CHAIN_APPROX_SIMPLE)
+    for c in cnts:
+        # compute the center of the contour
+        M = cv2.moments(c)
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+
+        # draw the contour and center of the shape on the image
+        cv2.drawContours(frame, [c], -1, (0, 255, 0), 2)
+        cv2.circle(frame, (cX, cY), 7, (255, 255, 255), -1)
+        cv2.putText(frame, "center", (cX - 20, cY - 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
     k = cv2.waitKey(1)
     if k == 27:

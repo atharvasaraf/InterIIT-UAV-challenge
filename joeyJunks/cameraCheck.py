@@ -25,7 +25,9 @@ while True:
     #         else :
     #             print "Min threshold"
     else:
-        print k
-        # pass
+        # print k
+        pass
+
+
 cap.release()
 cv2.destroyAllWindows()
