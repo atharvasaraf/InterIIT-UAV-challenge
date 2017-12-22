@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('rtsp://192.168.1.1:554/MJPG?W=720&H=400&Q=50&BR=5000000/track1')
 
 while True:
     _, frame = cap.read()
@@ -12,14 +12,15 @@ while True:
 
     mask = cv2.inRange(frame_hsv, lower_red, upper_red)
     _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    print(len(contours))
     if len(contours) != 0:
         c = max(contours, key=cv2.contourArea)
-        x, y, w, h = cv2.boundingRect(c)
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        cv2.circle(frame, ((2*x+w)/2, (2*y+h)/2), 7, (255, 255, 255), -1)
-        cv2.putText(frame, "center", ((2*x+w)/2 - 20, (2*y+h)/2 - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    (255, 255, 255), 2)
+        if cv2.contourArea(c) >= 500:
+            cv2.drawContours(frame, [c], -1, (0, 0, 255), 4)
+            x, y, w, h = cv2.boundingRect(c)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.circle(frame, ((2 * x + w) / 2, (2 * y + h) / 2), 7, (255, 255, 255), -1)
+            cv2.putText(frame, "center", ((2 * x + w) / 2 - 20, (2 * y + h) / 2 - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (255, 255, 255), 2)
     cv2.imshow('frame', frame)
 
     k = cv2.waitKey(1)

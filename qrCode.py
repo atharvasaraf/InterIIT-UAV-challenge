@@ -1,11 +1,13 @@
 import cv2,numpy,qrtools,os
 
+
 class QrCode:
     def ScanQr(self):
         qr = qrtools.QR()
         thresholdValue = 140;
         print "thresholdValue : 140 (default)"
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture('rtsp://192.168.1.1:554/MJPG?W=720&H=400&Q=50&BR=5000000/track1')
+        i = 1
         while True:
             ret,frame = cap.read()
             grayscaled = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
@@ -17,6 +19,8 @@ class QrCode:
             cv2.imwrite('img.png',threshold)
             if qr.decode('img.png'):
                 print "data : ",qr.data
+                print i
+                i += 1
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
             k=cv2.waitKey(1)
