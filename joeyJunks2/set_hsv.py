@@ -1,6 +1,6 @@
 import cv2, numpy as np
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture('rtsp://192.168.1.1:554/MJPG?W=720&H=400&Q=50&BR=5000000/track1')
 
 lower_colour = np.array([30, 100, 50])
 upper_colour = np.array([255, 255, 180])
@@ -8,10 +8,10 @@ upper_colour = np.array([255, 255, 180])
 while True:
     ret, frame = cap.read()
     # hue saturation value
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
+    blur = cv2.GaussianBlur(frame, (15, 15), 0)
+    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower_colour, upper_colour)
-    cv2.imshow("frame", frame)
+    # cv2.imshow("frame", frame)
     cv2.imshow("mask", mask)
 
     k = cv2.waitKey(1)
@@ -92,5 +92,8 @@ while True:
     else:
         pass
 
+hsv_file = open('hsv.txt', 'w')
+hsv_file.write(str(lower_colour) + "\n" + str(upper_colour))
+hsv_file.close()
 cap.release()
 cv2.destroyAllWindows()

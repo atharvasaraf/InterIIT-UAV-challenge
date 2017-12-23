@@ -3,7 +3,7 @@ import cv2, numpy as np
 cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
-    edges = cv2.Canny(frame, 100, 200);
+    edges = cv2.Canny(frame, 100, 200)
 
     # cv2.imshow("frame", frame)
     cv2.imshow("edges", edges )
