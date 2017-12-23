@@ -18,9 +18,9 @@ while True:
             cv2.drawContours(frame, [c], -1, (0, 0, 255), 4)
             x, y, w, h = cv2.boundingRect(c)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            cv2.circle(frame, ((2 * x + w) / 2, (2 * y + h) / 2), 7, (255, 255, 255), -1)
+            cv2.circle(frame, ((2 * x + w) / 2, (2 * y + h) / 2), 7, (0, 0, 255), -1)
             cv2.putText(frame, "center", ((2 * x + w) / 2 - 20, (2 * y + h) / 2 - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (255, 255, 255), 2)
+                        (0, 0, 255), 2)
     cv2.imshow('frame', frame)
 
     k = cv2.waitKey(1)

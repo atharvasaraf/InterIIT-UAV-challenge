@@ -5,7 +5,7 @@ while True:
     ret, frame = cap.read()
     edges = cv2.Canny(frame, 100, 200);
 
-    cv2.imshow("frame", frame)
+    # cv2.imshow("frame", frame)
     cv2.imshow("edges", edges )
 
     k = cv2.waitKey(1)
@@ -29,4 +29,4 @@ while True:
         print k
         # pass
 cap.release()
-cv2.destroyAllWindows
+cv2.destroyAllWindows()
