@@ -2,9 +2,24 @@
 import cv2
 import numpy as np
 
+#-------------USING WEBCAM----------------------
 cap = cv2.VideoCapture(0)
+#-----------------------------------------------
+
+
+#------------USING RPICAM----------------------
+
+
+#-----------------------------------------------
+
+
+
+#-----masking parameters for filtering Yellow Colour-------
 lower_color = np.array([20, 45, 80])
 upper_color = np.array([40, 130, 220])
+#-----------------------------------------------------
+
+
 while 1:
     ret, frame = cap.read()
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)

@@ -32,7 +32,7 @@ camera_capture = get_image()
 
 
 
-file = "/usr/src/scripts/test_image_1_from_open_cv2.jpg"
+file = "./img.jpg"
 # A nice feature of the imwrite method is that it will automatically choose the
 # correct format based on the file extension you provide. Convenient!
 cv2.imwrite(file, camera_capture)
