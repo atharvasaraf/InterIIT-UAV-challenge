@@ -1,6 +1,6 @@
 import cv2, numpy as np
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 lower_colour = np.array([20, 45, 80])
 upper_colour = np.array([40, 130, 220])
 while True:
