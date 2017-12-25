@@ -6,6 +6,7 @@ lower_colour = np.array([30, 100, 50])
 upper_colour = np.array([255, 255, 180])
 
 while True:
+
     ret, frame = cap.read()
     # hue saturation value
     blur = cv2.GaussianBlur(frame, (15, 15), 0)
