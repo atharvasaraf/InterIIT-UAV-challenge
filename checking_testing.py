@@ -48,7 +48,7 @@ while 1:
 				g2 = filter(lambda l : 0<l[1]<=0.78539 or 2.35619 < l[i][1] <= 1.57079,lines)
 =======
         for line in lines:
-            for r,theta in line:
+            for r, theta in line:
                 a = np.cos(theta)
                 b = np.sin(theta)
                 x0 = a * r
