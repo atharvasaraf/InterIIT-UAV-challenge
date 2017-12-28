@@ -51,7 +51,7 @@ while 1:
 		for i in range(len(lines)):
 			for r, theta in lines[i]:
 				if theta>1.57079:
-					theta=3.14159-theta
+					theta=-3.14159+theta
 				sum_theta=sum_theta + theta
 				sum_r=sum_r+r
 
@@ -66,8 +66,8 @@ while 1:
 				cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 				#print "r : ",r,"theta : ",theta       			
 				#cv2.imwrite('hough_lines.jpg',img)
-			sum_theta=sum_theta/len(lines[i])
-			sum_r=sum_r/len(lines[i])
+			sum_theta=sum_theta/len(lines)
+			sum_r=sum_r/len(lines)
 			print "sumtheta: ",sum_theta," sumr: ",sum_r, " len: ",len(lines[i]), "	theta",theta,"	r ",r
 			a=np.cos(sum_theta)
 			b=np.sin(sum_theta)
