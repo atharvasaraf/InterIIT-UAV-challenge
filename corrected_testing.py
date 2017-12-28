@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 # -------------USING WEBCAM----------------------
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 # -----------------------------------------------
 
 # ------------USING RPICAM----------------------
@@ -15,7 +15,7 @@ cap = cv2.VideoCapture(1)
 lower_color = np.array([20, 45, 80])
 upper_color = np.array([40, 130, 220])
 # -----------------------------------------------------
-i=0
+i = 0
 while 1:
     sum_r = 0
     sum_theta = 0
@@ -28,26 +28,26 @@ while 1:
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 50)
     if lines is not None:
         lines = lines[:4:]
-        for i in range(len(lines)):
-			for r,theta in lines[i]:
-				a = np.cos(theta)
-				b = np.sin(theta)
-				x0 = a * r
-				y0 = b * r
-				x1 = int(x0 + 1000 * (-b))
-				y1 = int(y0 + 1000 * a)
-				x2 = int(x0 - 1000 * (-b))
-				y2 = int(y0 - 1000 * a)
-				cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-				if -1.57079 < theta <= -0.78539:
-					theta = 2.35619 + theta
-				elif -0.78539 < theta < 0:
-					theta = theta + 1.57079
-				g1 = filter(lambda l: 0.78539 < l[i][1] <= 2.35619, lines)
-				g2 = filter(lambda l : 0<l[1]<=0.78539 or 2.35619 < l[i][1] <= 1.57079,lines)
+        for line in lines:
+            for r, theta in line:
+                a = np.cos(theta)
+                b = np.sin(theta)
+                x0 = a * r
+                y0 = b * r
+                x1 = int(x0 + 1000 * (-b))
+                y1 = int(y0 + 1000 * a)
+                x2 = int(x0 - 1000 * (-b))
+                y2 = int(y0 - 1000 * a)
+                # cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                if -1.57079 < theta <= -0.78539:
+                    theta = 2.35619 + theta
+                elif -0.78539 < theta < 0:
+                    theta = theta + 1.57079
+        g1 = filter(lambda l: 0.78539 < l[0][1] <= 2.35619, lines)
+        g2 = filter(lambda l: 0 < l[0][1] <= 0.78539 or 2.35619 < l[i][1] <= 1.57079, lines)
         if len(g1) != 0:
-            g1_theta_average = np.average([a[1] for a in g1])
-            g1_r_average = np.average([a[0] for a in g1])
+            g1_theta_average = np.average([a[0][1] for a in g1])
+            g1_r_average = np.average([a[0][0] for a in g1])
             a = np.cos(g1_theta_average)
             b = np.sin(g1_theta_average)
             x0 = a * g1_r_average
@@ -58,8 +58,8 @@ while 1:
             y2 = int(y0 - 1000 * a)
             cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
         if len(g2) != 0:
-            g2_theta_average = np.average([a[1] for a in g2])
-            g2_r_average = np.average([a[1] for a in g2])
+            g2_theta_average = np.average([a[0][1] for a in g2])
+            g2_r_average = np.average([a[0][1] for a in g2])
             a = np.cos(g2_theta_average)
             b = np.sin(g2_theta_average)
             x0 = a * g2_r_average
