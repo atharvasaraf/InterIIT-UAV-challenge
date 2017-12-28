@@ -29,7 +29,7 @@ while 1:
     if lines is not None:
         lines = lines[:4:]
         for line in lines:
-            for r,theta in line:
+            for r, theta in line:
                 a = np.cos(theta)
                 b = np.sin(theta)
                 x0 = a * r
