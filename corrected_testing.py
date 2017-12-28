@@ -44,45 +44,32 @@ while 1:
                 theta = theta + 1.57079
         g1 = filter(lambda l: 0.78539 < l[1] <= 2.35619, lines)
         g2 = filter(lambda l : 0<l[1]<=0.78539 or 2.35619 < l[1] <= 1.57079,lines)
-        g1_theta_average = np.average([a[1] for a in lines])
-		g1_r_average = np.average([a[1] for a in lines])
-		g1_theta_average = np.average([a[1] for a in lines])
-		g1_theta_average = np.average([a[1] for a in lines])
-# for i in range(check):
-    #     for r, theta in lines[i]:
-    #         a = np.cos(theta)
-    #         b = np.sin(theta)
-    #         x0 = a * r
-    #         y0 = b * r
-    #         x1 = int(x0 + 1000 * (-b))
-    #         y1 = int(y0 + 1000 * (a))
-    #         x2 = int(x0 - 1000 * (-b))
-    #         y2 = int(y0 - 1000 * (a))
-    #         cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-    #
-    #     if theta > -1.57079 and theta <= -0.78539:
-    #         theta = 2.35619 + theta
-    #     elif theta > -0.78539 and theta < 0:
-    #         theta = theta + 1.57079
-    #     sum_theta = sum_theta + theta
-    #     sum_r = sum_r + r
-    #
-    # sum_theta = sum_theta / check
-    # sum_r = sum_r / check
-    # a = np.cos(sum_theta)
-    # b = np.sin(sum_theta)
-    # x0 = a * sum_r
-    # y0 = b * sum_r
-    # x1 = int(x0 + 1000 * (-b))
-    # y1 = int(y0 + 1000 * (a))
-    # x2 = int(x0 - 1000 * (-b))
-    # y2 = int(y0 - 1000 * (a))
-    # cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 5)
-
-    # sum_r = 0
-    # sum_theta = 0
+        if len(g1) != 0:
+            g1_theta_average = np.average([a[1] for a in g1])
+            g1_r_average = np.average([a[0] for a in g1])
+            a = np.cos(g1_theta_average)
+            b = np.sin(g1_theta_average)
+            x0 = a * g1_r_average
+            y0 = b * g1_r_average
+            x1 = int(x0 + 1000 * (-b))
+            y1 = int(y0 + 1000 * a)
+            x2 = int(x0 - 1000 * (-b))
+            y2 = int(y0 - 1000 * a)
+            cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        if len(g2) != 0:
+            g2_theta_average = np.average([a[1] for a in g2])
+            g2_r_average = np.average([a[1] for a in g2])
+            a = np.cos(g2_theta_average)
+            b = np.sin(g2_theta_average)
+            x0 = a * g2_r_average
+            y0 = b * g2_r_average
+            x1 = int(x0 + 1000 * (-b))
+            y1 = int(y0 + 1000 * a)
+            x2 = int(x0 - 1000 * (-b))
+            y2 = int(y0 - 1000 * a)
+            cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
     cv2.imshow('img', frame)
-    k = cv2.waitKey(5) & 0xFF
+    k = cv2.waitKey(1) & 0xFF
     if k == 27:
         break
 
