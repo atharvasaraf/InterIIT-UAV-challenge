@@ -6,7 +6,7 @@ class QrCode:
         qr = qrtools.QR()
         thresholdValue = 140;
         print "thresholdValue : 140 (default)"
-        cap = cv2.VideoCapture('rtsp://192.168.1.1:554/MJPG?W=720&H=400&Q=50&BR=5000000/track1')
+        cap = cv2.VideoCapture(1)
         i = 1
         while True:
             ret,frame = cap.read()
@@ -15,8 +15,8 @@ class QrCode:
             # th = cv2.adaptiveThreshold(grayscaled, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 115, 1)
             # cv2.imshow('frame',frame)
             # cv2.imshow('th',th)
-            cv2.imshow('threshold',threshold)
-            cv2.imwrite('img.png',threshold)
+            cv2.imshow('threshold',frame)
+            cv2.imwrite('img.png',frame)
             if qr.decode('img.png'):
                 print "data : ",qr.data
                 print i
