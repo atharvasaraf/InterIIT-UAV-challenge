@@ -17,7 +17,6 @@ cap = cv2.VideoCapture(1)
 #----------------HSV FOR YELLOW COLOUR--------------------------
 lower_color = np.array([20, 45, 80])
 upper_color = np.array([40, 130, 220])
-<<<<<<< HEAD
 # --------------------------------------------------------------
 
 
@@ -60,7 +59,6 @@ while 1:
 	edges = cv2.Canny(mask, 35, 230, apertureSize=3)
 	lines = cv2.HoughLines(edges, 1, np.pi / 180, 50)
 	
-	# define two theta_difference absolute theta difference and rel
 	if lines is not None:
 		if len(lines)<=4:
 			check=len(lines)
@@ -104,7 +102,6 @@ while 1:
 	if k == 27:
 		break
 	cv2.imshow('img',frame)
-=======
 
 
 # -----------------------------------------------------_
@@ -194,7 +191,7 @@ while 1:
     if k == 27:
         break
     cv2.imshow('img', frame)
->>>>>>> 2a6a446d3f040f7ecf67d87807da479687ae5c09
+
 
 cap.release()
 cv2.destroyAllWindows()
