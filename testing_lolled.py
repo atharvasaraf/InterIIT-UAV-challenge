@@ -10,10 +10,6 @@ cap = cv2.VideoCapture(0)
 # --------------------------------------------------------------
 
 
-#----------------USING RPICAM-----------------------------------
-# --------------------------------------------------------------
-
-
 #----------------HSV FOR YELLOW COLOUR--------------------------
 lower_color = np.array([20, 45, 80])
 upper_color = np.array([40, 130, 220])
@@ -25,18 +21,34 @@ upper_color = np.array([40, 130, 220])
 
 #---------------findPoints function-----------------------------
 #----Returns (x1,y1)and(x2,y2) of line for given (r,theta)------
-def findPoints(r,theta):
-	a = np.cos(theta)
-	b = np.sin(theta)
-	x0 = a * r
-	y0 = b * r
-	x1 = int(x0 + 1000 * (-b))
-	y1 = int(y0 + 1000 * (a))
-	x2 = int(x0 - 1000 * (-b))
-	y2 = int(y0 - 1000 * (a))
-	return [(x1,y1),(x2,y2)]
+def findPoints(line,length):
+	if line is not None:
+		if length==1:	
+			line_length=40
+		else:
+			line_length=1000
+		a = np.cos((line[1]))
+		b = np.sin((line[1]))
+		x0 = a * (line[0])
+		y0 = b * (line[0])
+		x1 = int(x0 + line_length * (-b))
+		y1 = int(y0 + line_length * (a))
+		x2 = int(x0 - line_length * (-b))
+		y2 = int(y0 - line_length * (a))
+		return [(x1,y1),(x2,y2)]
 #---------------------------------------------------------------	
 
+#-----------------makeLines function----------------------------
+#---------draws lines when fed in two points on line------------
+def makeLines(frame,line,check):
+	if check==0:
+		colour=(0,0,255)
+	else:
+		colour=(255,0,0)
+	cv2.line(frame,line[0],line[1],colour,4)
+	
+	
+#---------------------------------------------------------------
 
 #---------------getPoint function-------------------------------
 #----Return Intersection of 2 polar lines in cartesian----------
@@ -52,13 +64,31 @@ def getPoint(r1,theta1,r2,theta2):
 		return (x,y)
 	else:
 		return None
+
+#----------------getAverage function----------------------------
+#----------Returns avarage of line array-------------------------
+#----------optimize signum function here itself!!!!!!!!
+def getAverage(pseud_lines):
+	average_r=0
+	average_theta=0
+	k=0
+	print pseud_lines ,"		blah blah blah"
+	print len(pseud_lines),"len lines here"
+	for k in range(len(pseud_lines)):
+		if (pseud_lines[k][0]) < 0:
+			psued_lines[k][1] -= math.radians(180)
+		average_r = average_r + pseud_lines[k][0]
+		average_theta = average_theta + pseud_lines[k][1]
+	average_r = average_r / len(pseud_lines)
+	average_theta = average_theta / len(pseud_lines)
+	return (average_r,average_theta)
 #---------------------------------------------------------------
 
 
 while 1:
 	#setting all working variables to default after every loop-----
-	sum_theta=0
-	sum_r=0
+	sum_main=np.array([[]])
+	sum_marker=np.array([[]])
 	a=[]
 	flag=0
 	#capture a frame from the video feed
@@ -82,51 +112,41 @@ while 1:
 			check=len(lines)
 		elif len(lines)>4:
 			check=4
-		
+		count=0
 		#--------------Loop through each line ------------------------
 		for i in range(check):
 			for r, theta in lines[i]:			
 				
 				#--Call findPoints function to obtain cartesian of line--
-				points=findPoints(r,theta)
-				
-				#-----Identify angle difference between current line and longest line--
-				theta_diff=np.degrees(abs(theta-lines[0][0][1]))
-				if theta_diff>20 and theta_diff<160:
-					print "Detecting some shit.....",theta_diff
-					flag=1
-				
+				points=findPoints((lines[i][0][0],lines[i][0][1]),0)	
+				#-----Identify angle difference between current line and vertical--
+				#theta_diff=np.degrees(abs(theta-lines[0][0][1]))
+				theta_diff=np.degrees(theta)
+				if theta_diff>45 and theta_diff<135:
+					if sum_marker.size == 0:
+						sum_marker=np.append(sum_marker,[r,theta])
+					else:
+						sum_marker=np.append([sum_marker],[[r,theta]],axis=0)
+				else:
+					if sum_main.size==0:
+						sum_main=np.append(sum_main,[r,theta])
+					else:
+						sum_main=np.append([sum_main],[[r,theta]],axis=0)
+					
 				#----------------Draw found line in Green---------------
 				cv2.line(frame, points[0], points[1], (0, 255, 0), 2)
 				
-				#----------Adjust angle for -ve r----------------------
-				if r < 0:
-					theta=theta-math.radians(180)	
 				
 				#-----------Compute Sum for averaging -----------
-				sum_theta=sum_theta+theta
-				sum_r=sum_r+abs(r)
-			#------------Add
-			a=np.append(a,np.degrees(theta))									
-		sum_theta = sum_theta / check
-		sum_r = sum_r / check
-		a=np.sign(a)
-		a=np.sum(a)
-		#print a
-		if abs(a)<4 or flag==1:
-			for i in range(check):
-				theta=np.degrees(lines[i][0][1])#adding condition for main line here for over lapping --source r theta
-				if theta>35 and theta<145:
-					pass
-				else:
-					points=findPoints(lines[i][0][0],lines[i][0][1])
-					cv2.line(frame,points[0],points[1],(0,0,255),4)
-					print("doing overlap")
-					break
-		else:
-			avg_points=findPoints(sum_r,sum_theta)
-			cv2.line(frame, avg_points[0], avg_points[1], (0, 0, 255), 2)
-			print("doing averaging")
+				if len(sum_marker) is not 0:
+					print sum_marker,"HERE!!!!"
+					avg_marker = getAverage(sum_marker)
+					line_marker = findPoints(avg_marker,1)
+					makeLines(frame,line_marker,1)
+				if len(sum_main) is not 0:
+					avg_main = getAverage(sum_main)
+					line_main=findPoints(avg_main,0)
+					makeLines(frame,line_main,0)
 	k = cv2.waitKey(1) & 0xFF
 	if k == 27:
 		break

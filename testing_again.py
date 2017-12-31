@@ -9,11 +9,6 @@ import time
 cap = cv2.VideoCapture(0)
 # --------------------------------------------------------------
 
-
-#----------------USING RPICAM-----------------------------------
-# --------------------------------------------------------------
-
-
 #----------------HSV FOR YELLOW COLOUR--------------------------
 lower_color = np.array([20, 45, 80])
 upper_color = np.array([40, 130, 220])
@@ -25,15 +20,15 @@ upper_color = np.array([40, 130, 220])
 
 #---------------findPoints function-----------------------------
 #----Returns (x1,y1)and(x2,y2) of line for given (r,theta)------
-def findPoints(r,theta):
+def findPoints(r,theta,length):
 	a = np.cos(theta)
 	b = np.sin(theta)
 	x0 = a * r
 	y0 = b * r
-	x1 = int(x0 + 1000 * (-b))
-	y1 = int(y0 + 1000 * (a))
-	x2 = int(x0 - 1000 * (-b))
-	y2 = int(y0 - 1000 * (a))
+	x1 = int(x0 + length * (-b))
+	y1 = int(y0 + length * (a))
+	x2 = int(x0 - length * (-b))
+	y2 = int(y0 - length * (a))
 	return [(x1,y1),(x2,y2)]
 #---------------------------------------------------------------	
 
@@ -57,10 +52,13 @@ def getPoint(r1,theta1,r2,theta2):
 
 while 1:
 	#setting all working variables to default after every loop-----
-	sum_theta=0
-	sum_r=0
+	sum_theta_secondary=0
+	sum_theta_main=0
+	sum_r_main=0
+	sum_r_secondary=0
+	count_secondary=0
+	count_main=0
 	a=[]
-	flag=0
 	#capture a frame from the video feed
 	ret, frame = cap.read()
 	
@@ -86,47 +84,51 @@ while 1:
 		#--------------Loop through each line ------------------------
 		for i in range(check):
 			for r, theta in lines[i]:			
-				
+				a=np.append(a,r)
 				#--Call findPoints function to obtain cartesian of line--
-				points=findPoints(r,theta)
-				
-				#-----Identify angle difference between current line and longest line--
-				theta_diff=np.degrees(abs(theta-lines[0][0][1]))
-				if theta_diff>20 and theta_diff<160:
-					print "Detecting some shit.....",theta_diff
-					flag=1
-				
-				#----------------Draw found line in Green---------------
-				cv2.line(frame, points[0], points[1], (0, 255, 0), 2)
-				
-				#----------Adjust angle for -ve r----------------------
+				points=findPoints(r,theta,1000)
 				if r < 0:
 					theta=theta-math.radians(180)	
+				#-----Identify angle difference between current line and longest line--
+				theta_diff=np.degrees(theta)
+				
+				if theta_diff>45 and theta_diff<135:
+					#print "Detecting secondary line at ",theta_diff
+					sum_theta_secondary=sum_theta_secondary+theta
+					sum_r_secondary=sum_r_secondary+abs(r)
+					count_secondary=count_secondary+1
+				else :
+					#print "Detecting primary line at ",theta_diff 
+					sum_theta_main=sum_theta_main+theta
+					sum_r_main=sum_r_main+abs(r)
+					count_main=count_main+1
+
+			    	
+				#----------------Draw found line in Green---------------
+				#cv2.line(frame, points[0], points[1], (0, 255, 0), 2)
+				
+				#----------Adjust angle for -ve r----------------------
+			
 				
 				#-----------Compute Sum for averaging -----------
-				sum_theta=sum_theta+theta
-				sum_r=sum_r+abs(r)
-			#------------Add
-			a=np.append(a,np.degrees(theta))									
-		sum_theta = sum_theta / check
-		sum_r = sum_r / check
+		#print ""
 		a=np.sign(a)
 		a=np.sum(a)
-		#print a
-		if abs(a)<4 or flag==1:
-			for i in range(check):
-				theta=np.degrees(lines[i][0][1])#adding condition for main line here for over lapping --source r theta
-				if theta>35 and theta<145:
-					pass
-				else:
-					points=findPoints(lines[i][0][0],lines[i][0][1])
-					cv2.line(frame,points[0],points[1],(0,0,255),4)
-					print("doing overlap")
-					break
-		else:
-			avg_points=findPoints(sum_r,sum_theta)
-			cv2.line(frame, avg_points[0], avg_points[1], (0, 0, 255), 2)
-			print("doing averaging")
+		if count_main is not 0:
+			sum_theta_main = sum_theta_main / count_main
+			sum_r_main = sum_r_main / count_main
+		if count_secondary is not 0:
+			sum_theta_secondary=sum_theta_secondary/count_secondary
+			sum_r_secondary=sum_r_secondary/count_secondary
+	 	
+		if abs(a)>=4:
+			points=findPoints(sum_r_main,sum_theta_main,1000)
+		else :
+			points=findPoints(lines[0][0][0],lines[0][0][1],1000)
+		
+		cv2.line(frame,points[0],points[1],(0,0,255),2)
+		points=findPoints(sum_r_secondary,sum_theta_secondary,30)
+		cv2.line(frame,points[0],points[1],(255,0,0),2)
 	k = cv2.waitKey(1) & 0xFF
 	if k == 27:
 		break
