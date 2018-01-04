@@ -66,10 +66,10 @@ while 1:
 	if lines is not None:
 		
 		#-------------Picking a Maximum of 4 longest lines---------
-		if len(lines)<=20:
+		if len(lines)<=4:
 			check=len(lines)
-		elif len(lines)>20:
-			check=20
+		elif len(lines)>4:
+			check=4
 		
 		#--------------Looping through each line ------------------------
 		for i in range(check):
@@ -99,10 +99,11 @@ while 1:
 
 			    	
 				#----------------Draw found line in Green---------------
-				cv2.line(frame, points[0], points[1], (0, 255, 0), 2)
+				#cv2.line(frame, points[0], points[1], (0, 255, 0), 2)
 												
 				#-----------Compute Sum for averaging -----------
 		a=np.sign(a)
+		a=np.sum(a)
 		if count_main is not 0:
 			sum_theta_main = sum_theta_main / count_main
 			sum_r_main = sum_r_main / count_main
@@ -111,7 +112,7 @@ while 1:
 			sum_r_secondary=sum_r_secondary/count_secondary
 	 	
 		#-------Correction for boundary conditions--------------
-		if abs(np.sum(a))>=len(a):
+		if abs(a)>=4:
 			points=findPoints(sum_r_main,sum_theta_main,1000)
 		else :
 			points=findPoints(lines[0][0][0],lines[0][0][1],1000)
@@ -138,16 +139,22 @@ while 1:
 	#pos_y_secondary= sum_r_secondary*sin_theta + 84*np.tan(sum_theta_secondary)- sum_r_secondary*sin_theta
 	pos_y_secondary=sum_r_secondary*sin_theta
 	pos_y_secondary=int(pos_y_secondary)
-	#print pos_y_secondary
+	print pos_y_secondary
 	if sum_r_main !=0 and sum_theta_main !=0:
 		x_primary=(112-(sum_r_main*np.sin(sum_theta_main)))
 		x_primary=x_primary/np.tan(sum_theta_main)
 		x_primary+=sum_r_main*np.cos(sum_theta_main)
 		x_primary=int(x_primary)
-		#cv2.circle(frame,(x_primary,112),9,(0,255,0),-1)
+		cv2.circle(frame,(x_primary,112),9,(0,255,0),-1)
 
-		cv2.imshow('img',frame)
-	
+	cv2.circle(frame,(84,pos_y_secondary),5,(255,0,0),-1)
+	if pos_y_secondary<=0 or pos_y_secondary>=224 :
+		pass#print "	Not found"
+	else :
+		pass#print pos_y_secondary
+
+	cv2.imshow('img',frame)
+
 cap.release()
 
 cv2.destroyAllWindows()
